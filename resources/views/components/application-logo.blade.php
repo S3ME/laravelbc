@@ -1,0 +1,1 @@
+<a class="fw-bold text-success text-decoration-none" href="{{ route('home') }}">GadgetStore</a>
