@@ -11,31 +11,25 @@
 
     <div class="py-5">
         <div class="container">
-            <div class="row gy-4">
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4 d-flex align-items-stretch">
                 {{-- Update Profile Information --}}
-                <div class="col-12 col-md-8 offset-md-2">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            @include('profile.partials.update-profile-information-form')
-                        </div>
+                <div>
+                    <div class="card shadow-sm h-100">
+                        @include('profile.partials.update-profile-information-form')
                     </div>
                 </div>
 
                 {{-- Update Password --}}
-                <div class="col-12 col-md-8 offset-md-2">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            @include('profile.partials.update-password-form')
-                        </div>
+                <div>
+                    <div class="card shadow-sm h-100">
+                        @include('profile.partials.update-password-form')
                     </div>
                 </div>
 
                 {{-- Delete User --}}
-                <div class="col-12 col-md-8 offset-md-2">
-                    <div class="card shadow-sm">
-                        <div class="card-body">
-                            @include('profile.partials.delete-user-form')
-                        </div>
+                <div>
+                    <div class="card shadow-sm h-100">
+                        @include('profile.partials.delete-user-form')
                     </div>
                 </div>
             </div>

@@ -18,13 +18,13 @@
         <!-- Extra CSS -->
         @stack('styles')
     </head>
-    <body class="font-sans text-gray-900 antialiased">
+    <body class="font-sans text-gray-900 antialiased d-flex flex-column min-vh-100">
         <x-navbar-home></x-navbar-home>
 
-        <main>
-            <div>
+        <main class="flex-grow-1">
+            <section class="p-5">
                 {{ $slot }}
-            </div>
+            </section>
         </main>
 
         <x-footer-home></x-footer-home>

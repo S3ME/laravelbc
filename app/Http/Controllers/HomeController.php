@@ -102,6 +102,152 @@ class HomeController extends Controller
     }
 
     /**
+     * Order the Product.
+     */
+    public function order(Request $request, string $id)
+    {
+        $product    = Products::findOrFail($id);
+        $validated  = $request->validate([
+            'name'  => 'required|string|max:255',
+            'phone' => 'required|numeric|digits_between:8,15',
+            'qty'   => 'required|integer|min:1|max:' . $product->stock,
+        ]);
+        $customerName   = trim($validated['name']);
+        $customerPhone  = '+62'.trim($validated['phone']);
+        $quantity       = $validated['qty'];
+
+        $text = "Hi, I'm {$customerName} ({$customerPhone}), I would like to order {$quantity} pcs of \"{$product->name}\".";
+        $whatsappUrl = "https://api.whatsapp.com/send?phone=628xxx&text=" . urlencode($text);
+
+        return redirect()->away($whatsappUrl);
+    }
+
+    /**
+     * Add product to cart.
+     */
+    public function addToCart(Request $request, string $id)
+    {
+        $product    = Products::findOrFail($id);
+        $qty        = (int) $request->input('qty', 1);
+
+        if ($qty < 1) {
+            $qty = 1;
+        }
+        if ($qty > $product->stock) {
+            $qty = $product->stock;
+        }
+
+        $cart = session()->get('carts', []);
+        if (isset($cart[$id])) {
+            $cart[$id] += $qty;
+            if ($cart[$id] > $product->stock) {
+                $cart[$id] = $product->stock;
+            }
+        } else {
+            $cart[$id] = $qty;
+        }
+        session()->put('carts', $cart);
+
+        return redirect()->back()->with('success', "{$product->name} added to cart.");
+    }
+
+    /**
+     * Showing Cart.
+     */
+    public function carts()
+    {
+        $cart = session()->get('carts', []);
+
+        // Get product details for each item in the cart
+        $cartItems = [];
+        if (!empty($cart) && is_array($cart)) {
+            foreach ($cart as $productId => $qty) {
+                $product = Products::find($productId);
+                if ($product) {
+                    $cartItems[] = [
+                        'product' => $product,
+                        'qty' => $qty,
+                    ];
+                }
+            }
+        }
+
+        return view('carts', [
+            'cartItems' => $cartItems,
+        ]);
+    }
+
+    /**
+     * Update the quantity of a product in the cart.
+     */
+    public function updateCart(Request $request, $id)
+    {
+        $qty = (int) $request->input('qty', 1);
+        $product = Products::findOrFail($id);
+
+        if ($qty < 1) {
+            $qty = 1;
+        }
+
+        if ($qty > $product->stock) {
+            $qty = $product->stock;
+        }
+
+        $cart = session()->get('carts', []);
+        if (isset($cart[$id])) {
+            $cart[$id] = $qty;
+        }
+
+        session()->put('carts', $cart);
+
+        return redirect()->back()->with('success', 'Cart updated.');
+    }
+
+    /**
+     * Remove a product from the cart.
+     */
+    public function removeFromCart(string $id)
+    {
+        $cart = session()->get('carts', []);
+        if (isset($cart[$id])) {
+            unset($cart[$id]);
+            session()->put('carts', $cart);
+        }
+        return redirect()->back()->with('success', 'Product removed from cart.');
+    }
+
+    /**
+     * Checkout the cart.
+     */
+    public function checkout(Request $request)
+    {
+        $name  = $request->input('name');
+        $phone = preg_replace('/[^0-9]/', '', $request->input('phone'));
+        $cart  = session()->get('carts', []);
+
+        if (empty($cart)) {
+            return redirect()->back()->with('error', 'Cart is empty.');
+        }
+
+        $orderList = [];
+
+        foreach ($cart as $productId => $qty) {
+            $product = \App\Models\Products::find($productId);
+            if ($product) {
+                $orderList[] = "{$qty} pcs of \"{$product->name}\"";
+            }
+        }
+
+        $orderText = implode(', ', $orderList);
+
+        $message = "Hi, I'm {$name} ({$phone}), I would like to order {$orderText}.";
+
+        $whatsappUrl = "https://api.whatsapp.com/send?phone=628xxx&text=" . urlencode($message);
+
+        return redirect()->away($whatsappUrl);
+    }
+
+    /**
      * Show the form for editing the specified resource.
      */
     public function edit(string $id)

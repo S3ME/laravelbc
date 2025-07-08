@@ -8,6 +8,12 @@ use App\Http\Controllers\ProductCategoriesController;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/productdetail/{id}', [HomeController::class, 'show'])->name('detail');
+Route::post('/order/{id}', [HomeController::class, 'order'])->name('order');
+Route::get('carts', [HomeController::class, 'carts'])->name('carts');
+Route::post('cart/add/{id}', [HomeController::class, 'addToCart'])->name('cart.add');
+Route::post('cart/remove/{id}', [HomeController::class, 'removeFromCart'])->name('cart.remove');
+Route::post('cart/update/{id}', [HomeController::class, 'updateCart'])->name('cart.update');
+Route::post('/cart/checkout', [HomeController::class, 'checkout'])->name('cart.checkout');
 
 Route::middleware(['admin'])->group(function () {
     Route::get('/dashboard', [HomeController::class, 'dashboard'])->name('dashboard');
@@ -32,10 +38,6 @@ Route::middleware(['admin'])->group(function () {
         Route::delete('/{id}', [ProductCategoriesController::class, 'destroy'])->name('categories.destroy');
     });
 });
-
-Route::get('carts', function () {
-    return view('carts');
-})->name('carts');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

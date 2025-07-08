@@ -17,18 +17,40 @@
                     </a>
                 </li>
                 @auth
-                    <li class="nav-item me-2">
-                        <a href="{{ url('/dashboard') }}" class="btn btn-success rounded-pill">
-                            Dashboard
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            {{ Str::substr(Auth::user()->name, 0, 1) }}
                         </a>
-                    </li>
-                    <li class="nav-item">
-                        <form method="POST" action="{{ route('logout') }}">
-                            @csrf
-                            <button type="submit" class="btn btn-outline-danger rounded-pill">
-                                Logout
-                            </button>
-                        </form>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                            @if (Auth::check() && Auth::user()->role == 'admin')
+                                <li>
+                                    <a href="{{ url('/dashboard') }}" class="dropdown-item">
+                                        Dashboard
+                                    </a>
+                                </li>
+                            @endif
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('profile.edit') }}">Profile</a>
+                            </li>
+
+                            {{-- 
+                            <li>
+                                <a class="dropdown-item" href="{{ route('orders.index') }}">Orders</a>
+                            </li> 
+                            --}}
+                            
+                            <li><hr class="dropdown-divider"></li>
+
+                            <li>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="dropdown-item text-danger">
+                                        Logout
+                                    </button>
+                                </form>
+                            </li>
+                        </ul>
                     </li>
                 @else
                     <li class="nav-item">
