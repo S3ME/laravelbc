@@ -25,7 +25,7 @@
             <!-- Image Grid -->
             <div class="col-md-4 col-12">
                 <div class="zoom-wrapper">
-                    <img src="{{ $product->image }}" class="zoom-img" id="zoomImage" alt="{{ $product->name }}">
+                    <img src="{{ asset('storage/images/products/' . $product->image) }}" class="zoom-img" id="zoomImage" alt="{{ $product->name }}">
                 </div>
             </div>
 
@@ -122,7 +122,7 @@
                 @forelse ($relatedProducts as $related)
                     <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                         <a href="{{ route('detail', $related->id) }}" class="card h-100 text-decoration-none">
-                            <img src="{{ $related->image }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ $related->name }}">
+                            <img src="{{ asset('storage/images/products/' . $related->image) }}" class="card-img-top" style="height: 160px; object-fit: cover;" alt="{{ $related->name }}">
                             <div class="card-body d-flex flex-column">
                                 <h6 class="card-title">{{ $related->name }}</h6>
                                 <p class="text-success fw-semibold">Rp{{ number_format($related->price, 0, ',', '.') }}</p>

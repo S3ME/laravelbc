@@ -42,12 +42,12 @@
         </div>
 
         {{-- Register --}}
-        <div class="mb-3">
+        {{-- <div class="mb-3">
             {{ __("Don't have account? ") }}
             <a href="{{ route('register') }}" class="text-decoration-none">
                 {{ __('Register Now') }}
             </a>
-        </div>
+        </div> --}}
 
         {{-- Login --}}
         <div class="d-flex justify-content-between align-items-center">
